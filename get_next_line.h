@@ -17,7 +17,16 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-# define BUF_SIZE 1000
+# define BUFF_SIZE 100
+
+typedef struct 	s_gnl
+{
+	int fd;
+	char *buf;
+	char *str;
+	struct s_gnl *next;
+	struct s_gnl *prev;
+}				t_gnl;
 
 # include "libft/libft.h"
 

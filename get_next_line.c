@@ -25,62 +25,143 @@ int ft_len(char *str)
 
 int		get_next_line(const int fd, char **line)
 {
-	static	char *str;
-	char buf[BUF_SIZE + 1];
+	static	t_gnl *lst;
 	int res;
-	int len;
-	int flag;
-	int i = 0;
+	int len1;
+	int len2;
+	int buf_len;
+	char *tmp;
 
 	res = 0;
-	len = 0;
-	flag = 0;
-	str = (char *)malloc(sizeof(char) * 1);
-	if (fd < 0 || !str || BUF_SIZE == 0 || !line)
-		return (-1);
-	while ((res = read(fd, buf, BUF_SIZE)))
+	len1 = 0;
+	len2 = 0;
+	buf_len = 0;
+	if (!lst)
 	{
-		//printf("buf: %s\n", buf);
-		printf("res: %d\n", res);
-		if ((ft_memchr(buf, '\n', BUF_SIZE)))
-		{
-			flag = 1;
-			break ;
-		}
+		lst = (t_gnl *)malloc(sizeof(t_gnl));
+		lst->fd = fd;
+		lst->buf = ft_strdup("");
+		lst->str = ft_strdup("");
+	}
+	if (fd < 0 || !lst || BUFF_SIZE == 0 || !line)
+		return (-1);
+	//printf("buf: |%s|\n", lst->buf);
+	while (!(ft_memchr(lst->str, '\n', BUFF_SIZE)) && (res = read(lst->fd, lst->buf, BUFF_SIZE)))
+	{
 		if (res == -1)
 			return (-1);
-		buf[res] = '\0';
-		str = ft_strjoin(str, buf);
-		printf("str: %s\n", str);
+		lst->buf[res] = '\0';
+		//printf("buf: |%s|\n", lst->buf);
+		lst->str = ft_strjoin(lst->str, lst->buf);
+		//printf("str: |%s|\n", lst->str);
 	}
-	if (flag == 1)
+	buf_len = ft_strlen(lst->str);
+	len1 = ft_len(lst->str);
+	*line = ft_strsub(lst->str, 0, len1);
+	//printf("bufLEN:%d\n", buf_len);
+	len1 = ft_strlen(lst->str);
+	len2 = ft_strlen(*line);
+	//tmp = ft_strnew(len1 - len2);
+	tmp = ft_strsub(lst->str, len2 + 1, len1 - len2);
+	len1 = ft_strlen(tmp);
+	//printf("tmp: %d\n", len1);
+	lst->str = ft_strdup(tmp);
+	//printf("str2: |%s|\n", lst->str);
+	//printf("line: |%s|\n", *line);
+	if (res == 0 && buf_len > 0)
 	{
-		//len = ft_len(str);
-		while (buf[i] != '\n')
-		{
-			str[i] = buf[i];
-			i++;
-		}
-
-		//str = ft_strjoin(str, buf);
-		printf("str2: %s\n", str);
+		return (1);
 	}
-	// printf("str: %s\n", str);
-	len = ft_strlen(str);
-	*line = ft_strsub(str, 0, len);
-	printf("line: | %s |\n", *line);
+	if (res == 0 && buf_len == 0)
+		return (0);
+	if (line)
+		return (1);
 	return (0);
 }
 
 int main(int argc, char **argv)
 {
 	int fd;
-	//int bytes;   b
-	//char *buf;
 
 	fd = 0;
 	fd = open(argv[1], O_RDONLY);
 	char *line;
-	get_next_line(fd, &line);
+	int a = 0;
+
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+	// get_next_line(fd, &line);
+
+
+
+	a = get_next_line(fd, &line);
+	printf("|%d|\n", a);
+	a = get_next_line(fd, &line);
+	printf("|%d|\n", a);
+	a = get_next_line(fd, &line);
+	printf("|%d|\n", a);
+	a = get_next_line(fd, &line);
+	printf("|%d|\n", a);
+	a = get_next_line(fd, &line);
+	printf("|%d|\n", a);
+	a = get_next_line(fd, &line);
+	printf("|%d|\n", a);
+	a = get_next_line(fd, &line);
+	printf("|%d|\n", a);
+
+
+
+	close (fd);
 	return (0);
 }
