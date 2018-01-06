@@ -11,11 +11,10 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
-int ft_len(char *str)
+int				ft_len(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] && str[i] != '\n')
@@ -23,14 +22,55 @@ int ft_len(char *str)
 	return (i);
 }
 
-int		search_and_read(t_gnl *lst, char **line)
+t_gnl			*lst_new(void const *content, ssize_t size)
 {
-	char	*buf;
-	ssize_t	ret;
-	char	*tmp;
+	t_gnl *head;
 
-	buf = (char *)malloc(BUFF_SIZE + 1);
-	while ((ret = read(lst->fd, buf, BUFF_SIZE)))
+	head = (t_gnl *)malloc(sizeof(t_gnl));
+	if (head == NULL)
+		return (NULL);
+	if (content == NULL)
+	{
+		head->str = NULL;
+		head->fd = 0;
+		head->next = NULL;
+	}
+	else
+	{
+		head->str = (void *)malloc(size);
+		if (head->str == NULL)
+			return (NULL);
+		ft_memcpy(head->str, (void *)content, size);
+		head->fd = size;
+		head->next = NULL;
+	}
+	return (head);
+}
+
+static t_gnl	*sort_list(int fd, t_gnl **lst)
+{
+	t_gnl *head;
+
+	head = *lst;
+	while (head)
+	{
+		if (head->fd == fd)
+			return (head);
+		head = head->next;
+	}
+	head = lst_new("", 1);
+	head->next = *lst;
+	*lst = head;
+	(*lst)->fd = fd;
+	return (*lst);
+}
+
+static int		search_and_read(int fd, t_gnl *lst, char **line, char *buf)
+{
+	ssize_t		ret;
+	char		*tmp;
+
+	while ((ret = read(fd, buf, BUFF_SIZE)))
 	{
 		if (ret == -1)
 			return (-1);
@@ -47,82 +87,22 @@ int		search_and_read(t_gnl *lst, char **line)
 		return (0);
 	tmp = *line;
 	*line = ft_strsub(lst->str, 0, ft_len(lst->str));
-	if (tmp)
-		free(tmp);
 	tmp = lst->str;
 	lst->str = ft_strsub(lst->str, ft_len(lst->str) + 1,
 		ft_strlen(lst->str) - ft_strlen(*line));
-	if (tmp)
-		free(tmp);
 	return (1);
 }
 
-int		get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
 	static t_gnl	*lst;
+	t_gnl			*file;
+	char			*buf;
 
 	if (fd < 0 || BUFF_SIZE <= 0 || !line)
 		return (-1);
-	if (!lst)
-	{
-		lst = (t_gnl *)malloc(sizeof(t_gnl));
-		lst->fd = fd;
-		lst->str = ft_memalloc(1);
-	}
-	return (search_and_read(lst, line));
+	if (!(buf = (char *)malloc(BUFF_SIZE + 1)))
+		return (-1);
+	file = sort_list(fd, &lst);
+	return (search_and_read(fd, file, line, buf));
 }
-
-
-// int main(int argc, char **argv)
-// {
-// 	int fd;
-
-// 	fd = 50;
-// 	//fd = open(argv[1], O_RDONLY);
-// 	char *line;
-// 	int a = 0;
-
-// 	// while (get_next_line(fd, &line) == 1)
-// 	// {
-// 	// 	printf("|%d|\n", a++);
-// 	// }
-// 	a = get_next_line(fd, &line);
-// 	// printf("sdcsd %d\n", strcmp(line, "aaa"));
-// 	printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-// 	// a = get_next_line(fd, &line);
-// 	// printf("|%d|\n", a);
-
-
-
-// 	close (fd);
-// 	return (0);
-// }
