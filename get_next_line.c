@@ -77,19 +77,19 @@ static int		search_and_read(int fd, t_gnl *lst, char **line, char *buf)
 		buf[ret] = '\0';
 		tmp = lst->str;
 		lst->str = ft_strjoin(lst->str, buf);
-		if (tmp)
-			free(tmp);
+		free(tmp);
 		if (ft_strchr(buf, '\n'))
 			break ;
 	}
-	free(buf);
+	if (buf)
+		free(buf);
 	if (!ret && !ft_strlen(lst->str))
 		return (0);
-	tmp = *line;
 	*line = ft_strsub(lst->str, 0, ft_len(lst->str));
 	tmp = lst->str;
 	lst->str = ft_strsub(lst->str, ft_len(lst->str) + 1,
 		ft_strlen(lst->str) - ft_strlen(*line));
+	free(tmp);
 	return (1);
 }
 
